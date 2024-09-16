@@ -1,4 +1,4 @@
-package table.order.table.models;
+package table.order.table.model;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

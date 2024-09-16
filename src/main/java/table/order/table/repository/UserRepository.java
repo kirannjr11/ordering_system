@@ -1,10 +1,9 @@
-package table.order.table.repositorroes;
+package table.order.table.repository;
 
 import org.springframework.stereotype.Repository;
-import table.order.table.models.User;
+import table.order.table.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.nio.file.LinkOption;
 import java.util.Optional;
 
 @Repository

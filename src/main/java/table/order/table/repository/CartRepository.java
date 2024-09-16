@@ -1,8 +1,8 @@
-package table.order.table.repositorroes;
+package table.order.table.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-import table.order.table.models.Cart;
+import table.order.table.model.Cart;
 
 import java.util.Optional;
 
