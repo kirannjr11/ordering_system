@@ -9,7 +9,7 @@ import table.order.table.service.OrderItemService;
 import java.util.List;
 
 @RestController
-@RequestMapping("/orders/{orderId}/items")
+@RequestMapping("/order_items")
 public class OrderItemController {
 
     @Autowired

@@ -14,9 +14,9 @@ public class OrderController {
     @Autowired
     private OrderService orderService;
 
-    @PostMapping("/{userId}")
-    public OrderDTO createOrder(@RequestBody OrderDTO orderDTO, @PathVariable Long userId) {
-        return orderService.createOrder(orderDTO, userId);
+    @PostMapping
+    public OrderDTO createOrder(@RequestBody OrderDTO orderDTO) {
+        return orderService.createOrder(orderDTO, orderDTO.getUserId());  // Ensure this method is correctly mapped
     }
 
     @GetMapping

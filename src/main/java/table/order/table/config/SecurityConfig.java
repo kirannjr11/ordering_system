@@ -30,14 +30,17 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(csrf -> csrf.disable())  // Disable CSRF for simplicity in an API-based application
+                .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/register", "/auth/login").permitAll()  // Allow access to register and login
-                        .requestMatchers("/menus/**").hasRole("USER")
-                        .requestMatchers("/orders/**").hasRole("ADMIN")
-                        .anyRequest().authenticated()
+                                .anyRequest().permitAll()
+//                        .requestMatchers("/auth/register", "/auth/login").permitAll()  // Allow access to register and login
+//                        .requestMatchers("/menus/**").hasRole("USER")
+//                        .requestMatchers("/carts/**").hasRole("USER")
+//                        .requestMatchers("/order_items/**").hasRole("USER")
+//                        .requestMatchers("/orders/**").hasRole("ADMIN")
+//                        .anyRequest().authenticated()
                 )
-                .httpBasic(withDefaults());  // Enable Basic Authentication
+                .httpBasic(withDefaults());  // Enable Basic Authenticationa
 
         return http.build();
     }

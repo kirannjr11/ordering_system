@@ -9,40 +9,51 @@ import table.order.table.service.CartItemService;
 import java.util.List;
 
 @RestController
-@RequestMapping("/items")
+@RequestMapping("/cart-items")
 public class CartItemController {
+
     @Autowired
     private CartItemService cartItemService;
 
-    @PostMapping
+    // Create a new CartItem
+    @PostMapping("/carts/{cartId}")
     public CartItemDTO createCartItem(@RequestBody CartItemDTO cartItemDTO, @PathVariable Long cartId) {
         return cartItemService.createCartItem(cartItemDTO, cartId);
     }
 
-    @GetMapping
+    // Get a CartItem by its ID
+    @GetMapping("/{cartItemId}")
+    public CartItemDTO getCartItemById(@PathVariable Long cartItemId) {
+        CartItemDTO cartItemDTO = cartItemService.getCartItemById(cartItemId);
+        if (cartItemDTO == null) {
+            throw new InvalidUserDataException("CartItem not found with ID: " + cartItemId);
+        }
+        return cartItemDTO;
+    }
+
+    // Get all CartItems for a Cart by Cart ID
+    @GetMapping("/carts/{cartId}")
     public List<CartItemDTO> getAllCartItems(@PathVariable Long cartId) {
         return cartItemService.getAllCartItems(cartId);
     }
 
-
-    @PutMapping("/{id}")
-    public CartItemDTO updateCartItem(@PathVariable Long id, @RequestBody CartItemDTO cartItemDTO) {
-        CartItemDTO existingCartItemDto = cartItemService.getCartItemById(id);
-        if (existingCartItemDto == null) {
-            throw new InvalidUserDataException("Item not found with ID: " + id);
+    // Update an existing CartItem
+    @PutMapping("/{cartItemId}")
+    public CartItemDTO updateCartItem(@PathVariable Long cartItemId, @RequestBody CartItemDTO cartItemDTO) {
+        CartItemDTO existingCartItemDTO = cartItemService.getCartItemById(cartItemId);
+        if (existingCartItemDTO == null) {
+            throw new InvalidUserDataException("CartItem not found with ID: " + cartItemId);
         }
-        return cartItemService.updateCartItem(id, cartItemDTO);
+        return cartItemService.updateCartItem(cartItemId, cartItemDTO);
     }
 
-    // Delete CartItem
+    // Delete a CartItem by its ID
     @DeleteMapping("/{cartItemId}")
-    public void deleteCartItem(@PathVariable Long cartItemId, @PathVariable Long cartId) {
-        List<CartItemDTO> cartItems = cartItemService.getAllCartItems(cartId);
-        boolean cartItemExists = cartItems.stream().anyMatch(item -> item.getId().equals(cartItemId));
-        if (!cartItemExists) {
+    public void deleteCartItem(@PathVariable Long cartItemId) {
+        CartItemDTO cartItemDTO = cartItemService.getCartItemById(cartItemId);
+        if (cartItemDTO == null) {
             throw new InvalidUserDataException("CartItem not found with ID: " + cartItemId);
         }
         cartItemService.deleteCartItem(cartItemId);
     }
-
 }
