@@ -51,6 +51,21 @@ public class CartItemService {
         return new CartItemDTO(savedCartItem.getId(), menuDTO, savedCartItem.getQuantity());
     }
 
+    public CartItemDTO getCartItemById(Long cartItemId) {
+        if (cartItemId == null) {
+            throw new InvalidUserDataException("CartItem ID cannot be null");
+        }
+
+
+        CartItem cartItem = cartItemRepository.findById(cartItemId)
+                .orElseThrow(() -> new InvalidUserDataException("CartItem not found with ID: " + cartItemId));
+
+
+        Menu menu = cartItem.getMenu();
+        MenuDTO menuDTO = new MenuDTO(menu.getId(), menu.getName(), menu.getPrice(), menu.getDescription());
+        return new CartItemDTO(cartItem.getId(), menuDTO, cartItem.getQuantity());
+    }
+
     // Get all CartItems
     public List<CartItemDTO> getAllCartItems(Long cartId) {
         if (cartId == null) {
@@ -68,6 +83,28 @@ public class CartItemService {
                 })
                 .collect(Collectors.toList());
     }
+
+
+    // Update CartItem
+    public CartItemDTO updateCartItem(Long cartItemId, CartItemDTO cartItemDTO) {
+        CartItem existingCartItem = cartItemRepository.findById(cartItemId)
+                .orElseThrow(() -> new InvalidUserDataException("CartItem not found with ID: " + cartItemId));
+
+        if (cartItemDTO.getQuantity() != null) {
+            existingCartItem.setQuantity(cartItemDTO.getQuantity());
+        }
+
+        if (cartItemDTO.getMenu() != null) {
+            Menu menu = menuRepository.findById(cartItemDTO.getMenu().getId())
+                    .orElseThrow(() -> new InvalidUserDataException("Menu not found with ID: " + cartItemDTO.getMenu().getId()));
+            existingCartItem.setMenu(menu);
+        }
+
+        CartItem updatedCartItem = cartItemRepository.save(existingCartItem);
+        MenuDTO menuDTO = new MenuDTO(updatedCartItem.getMenu().getId(), updatedCartItem.getMenu().getName(), updatedCartItem.getMenu().getPrice(), updatedCartItem.getMenu().getDescription());
+        return new CartItemDTO(updatedCartItem.getId(), menuDTO, updatedCartItem.getQuantity());
+    }
+
 
     // Delete CartItem
     public void deleteCartItem(Long cartItemId) {

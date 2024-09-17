@@ -12,5 +12,5 @@ import lombok.Setter;
 public class CartItemDTO {
     private Long id;
     private MenuDTO menu;
-    private int quantity;
+    private Integer quantity;
 }

@@ -5,9 +5,11 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
 import table.order.table.Enum.OrderStatus;
 
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
@@ -22,10 +24,13 @@ public class Order {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")  // Foreign key in orders table
+    @JoinColumn(name = "user_id")
     private User user;
 
     private Long tableId;
+
+    @CreationTimestamp
+    private LocalDateTime createdAt;
 
     @Enumerated(EnumType.STRING)
     private OrderStatus status;
