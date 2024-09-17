@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import table.order.table.Enum.Role;
 
 @Getter
 @Setter
@@ -13,5 +14,5 @@ public class UserDTO {
     private Long id;
     private String phoneNumber;
     private String password;
-    private String role;
+    private Role role;
 }
