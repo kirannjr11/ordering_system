@@ -21,9 +21,10 @@ public class CartService {
     private UserRepository userRepository;
 
     // Create Cart
-    public CartDTO createCart(Long userId) {
+    public CartDTO createCart(CartDTO cartDTO) {
+        Long userId = cartDTO.getUserId();
         if (userId == null) {
-            throw new InvalidUserDataException("User ID cannot be null");
+            throw new InvalidUserDataException("User ID cannot be null.");
         }
 
         User user = userRepository.findById(userId)
@@ -34,6 +35,25 @@ public class CartService {
 
         Cart savedCart = cartRepository.save(cart);
         return new CartDTO(savedCart.getId(), savedCart.getUser().getId(), null);
+    }
+
+    // Update Cart
+    public CartDTO updateCart(Long cartId, CartDTO cartDTO) {
+        Long userId = cartDTO.getUserId();
+        if (cartId == null || userId == null) {
+            throw new InvalidUserDataException("Cart ID and User ID cannot be null.");
+        }
+
+        Cart cart = cartRepository.findById(cartId)
+                .orElseThrow(() -> new InvalidUserDataException("Cart not found with ID: " + cartId));
+
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new InvalidUserDataException("User not found with ID: " + userId));
+
+        cart.setUser(user);
+        Cart updatedCart = cartRepository.save(cart);
+
+        return new CartDTO(updatedCart.getId(), updatedCart.getUser().getId(), null);
     }
 
     // Get Cart by ID

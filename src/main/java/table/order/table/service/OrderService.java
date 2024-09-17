@@ -2,6 +2,7 @@ package table.order.table.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import table.order.table.Enum.OrderStatus;
 import table.order.table.dto.OrderDTO;
 import table.order.table.exception.InvalidUserDataException;
 import table.order.table.model.Order;
@@ -32,18 +33,30 @@ public class OrderService {
         Order order = new Order();
         order.setUser(user);
         order.setTableId(orderDTO.getTableId());
-        order.setStatus(orderDTO.getStatus());
+
+        try {
+            OrderStatus status = OrderStatus.valueOf(orderDTO.getStatus());  // Matches "CANCEL" or "COMPLETE"
+            order.setStatus(status);
+        } catch (IllegalArgumentException e) {
+            throw new InvalidUserDataException("Invalid status value: " + orderDTO.getStatus());
+        }
 
         Order savedOrder = orderRepository.save(order);
-        return new OrderDTO(savedOrder.getId(), savedOrder.getUser().getId(), savedOrder.getTableId(), savedOrder.getStatus(), null);
+        return new OrderDTO(savedOrder.getId(), savedOrder.getUser().getId(), savedOrder.getTableId(), savedOrder.getStatus().name(), null);
     }
 
+    // Get all Orders
     // Get all Orders
     public List<OrderDTO> getAllOrders() {
         List<Order> orders = orderRepository.findAll();
 
         return orders.stream()
-                .map(order -> new OrderDTO(order.getId(), order.getUser().getId(), order.getTableId(), order.getStatus(), null))
+                .map(order -> new OrderDTO(
+                        order.getId(),
+                        order.getUser().getId(),
+                        order.getTableId(),
+                        order.getStatus().name(),  // Convert enum to String
+                        null))
                 .collect(Collectors.toList());
     }
 

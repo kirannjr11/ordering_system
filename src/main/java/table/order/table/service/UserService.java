@@ -27,7 +27,7 @@ public class UserService {
     private PasswordEncoder passwordEncoder;
 
     // create user
-    private UserDTO createUser(UserDTO userDTO) {
+    public UserDTO createUser(UserDTO userDTO) {
         if (userDTO.getPhoneNumber() == null || userDTO.getPhoneNumber().isEmpty()) {
             throw new InvalidUserDataException("phone number can not be null");
         }

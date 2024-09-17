@@ -3,14 +3,19 @@ package table.order.table.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import table.order.table.dto.CartItemDTO;
+import table.order.table.dto.MenuDTO;
 import table.order.table.exception.InvalidUserDataException;
 import table.order.table.model.Cart;
 import table.order.table.model.CartItem;
+import table.order.table.model.Menu;
 import table.order.table.repository.CartItemRepository;
 import table.order.table.repository.CartRepository;
+import table.order.table.repository.MenuRepository;
 
 import java.util.List;
 import java.util.stream.Collectors;
+
+
 
 @Service
 public class CartItemService {
@@ -19,6 +24,9 @@ public class CartItemService {
 
     @Autowired
     private CartRepository cartRepository;
+
+    @Autowired
+    private MenuRepository menuRepository;
 
     // Create CartItem
     public CartItemDTO createCartItem(CartItemDTO cartItemDTO, Long cartId) {
@@ -29,13 +37,18 @@ public class CartItemService {
         Cart cart = cartRepository.findById(cartId)
                 .orElseThrow(() -> new InvalidUserDataException("Cart not found with ID: " + cartId));
 
+        // Convert MenuDTO to Menu entity directly
+        Menu menu = menuRepository.findById(cartItemDTO.getMenu().getId())
+                .orElseThrow(() -> new InvalidUserDataException("Menu not found with ID: " + cartItemDTO.getMenu().getId()));
+
         CartItem cartItem = new CartItem();
         cartItem.setCart(cart);
-        cartItem.setMenu(cartItemDTO.getMenu());
+        cartItem.setMenu(menu);
         cartItem.setQuantity(cartItemDTO.getQuantity());
 
         CartItem savedCartItem = cartItemRepository.save(cartItem);
-        return new CartItemDTO(savedCartItem.getId(), savedCartItem.getMenu(), savedCartItem.getQuantity());
+        MenuDTO menuDTO = new MenuDTO(menu.getId(), menu.getName(), menu.getPrice(), menu.getDescription());
+        return new CartItemDTO(savedCartItem.getId(), menuDTO, savedCartItem.getQuantity());
     }
 
     // Get all CartItems
@@ -48,7 +61,11 @@ public class CartItemService {
                 .orElseThrow(() -> new InvalidUserDataException("Cart not found with ID: " + cartId));
 
         return cart.getCartItems().stream()
-                .map(cartItem -> new CartItemDTO(cartItem.getId(), cartItem.getMenu(), cartItem.getQuantity()))
+                .map(cartItem -> {
+                    Menu menu = cartItem.getMenu();
+                    MenuDTO menuDTO = new MenuDTO(menu.getId(), menu.getName(), menu.getPrice(), menu.getDescription());
+                    return new CartItemDTO(cartItem.getId(), menuDTO, cartItem.getQuantity());
+                })
                 .collect(Collectors.toList());
     }
 
