@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import table.order.table.Enum.OrderStatus;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -16,7 +17,7 @@ public class OrderDTO {
     private Long id;
     private Long userId;
     private Long tableId;
-    private String status;
+    private OrderStatus status;
     private LocalDateTime createdAt;
     private List<OrderItemDTO> items;
 }

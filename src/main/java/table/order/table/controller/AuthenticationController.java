@@ -25,6 +25,7 @@ public class AuthenticationController {
 
     @PostMapping("/register")
     public ResponseEntity<String> registerUser(@RequestBody UserDTO userDTO) {
+        System.out.println("Register endpoint hit with phone number: " + userDTO.getPhoneNumber());
         userService.createUser(userDTO);
         return new ResponseEntity<>("User registered successfully. Please log in.", HttpStatus.CREATED);
     }

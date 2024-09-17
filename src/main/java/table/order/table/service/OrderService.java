@@ -13,7 +13,6 @@ import table.order.table.repository.UserRepository;
 import java.util.List;
 import java.util.stream.Collectors;
 
-
 @Service
 public class OrderService {
     @Autowired
@@ -35,25 +34,45 @@ public class OrderService {
         order.setUser(user);
         order.setTableId(orderDTO.getTableId());
 
-        try {
-            OrderStatus status = OrderStatus.valueOf(orderDTO.getStatus());  // Matches "CANCEL" or "COMPLETE"
-            order.setStatus(status);
-        } catch (IllegalArgumentException e) {
-            throw new InvalidUserDataException("Invalid status value: " + orderDTO.getStatus());
+        // Ensure the status is provided
+        if (orderDTO.getStatus() == null) {
+            throw new InvalidUserDataException("Order status cannot be null.");
         }
+
+        // Set the status directly, since it's already an enum
+        order.setStatus(orderDTO.getStatus());
 
         Order savedOrder = orderRepository.save(order);
-        return new OrderDTO(savedOrder.getId(), savedOrder.getUser().getId(), savedOrder.getTableId(), savedOrder.getStatus().name(), savedOrder.getCreatedAt(), null);
+
+        // Return the saved order DTO
+        return new OrderDTO(
+                savedOrder.getId(),
+                savedOrder.getUser().getId(),
+                savedOrder.getTableId(),
+                savedOrder.getStatus(),  // Passing the enum directly
+                savedOrder.getCreatedAt(),
+                null
+        );
     }
 
-    // get order by id
+    // Get order by id
     public OrderDTO getOrderById(Long orderId) {
         if (orderId == null) {
-            throw new InvalidUserDataException("Order id can't be null");
+            throw new InvalidUserDataException("Order ID can't be null");
         }
 
-        Order order = orderRepository.findById(orderId).orElseThrow(()-> new InvalidUserDataException("Order not found with id :"+orderId));
-        return new OrderDTO(order.getId(), order.getUser().getId(), order.getTableId(), order.getStatus().name(), order.getCreatedAt(), null);
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new InvalidUserDataException("Order not found with ID: " + orderId));
+
+        // Return the order DTO
+        return new OrderDTO(
+                order.getId(),
+                order.getUser().getId(),
+                order.getTableId(),
+                order.getStatus(),  // Passing the enum directly
+                order.getCreatedAt(),
+                null
+        );
     }
 
     // Get all Orders
@@ -65,13 +84,13 @@ public class OrderService {
                         order.getId(),
                         order.getUser().getId(),
                         order.getTableId(),
-                        order.getStatus().name(),
-                        order.getCreatedAt(),  // Pass the createdAt field
+                        order.getStatus(),  // Passing the enum directly
+                        order.getCreatedAt(),
                         null))
                 .collect(Collectors.toList());
     }
 
-    // update order
+    // Update order
     public OrderDTO updateOrder(Long orderId, OrderDTO orderDTO) {
         if (orderId == null) {
             throw new InvalidUserDataException("Order ID cannot be null");
@@ -84,16 +103,22 @@ public class OrderService {
             existingOrder.setTableId(orderDTO.getTableId());
         }
 
-        if (orderDTO.getStatus() != null && !orderDTO.getStatus().isEmpty()) {
-            OrderStatus status = OrderStatus.valueOf(orderDTO.getStatus().toUpperCase());
-            if (status == null) {
-                throw new InvalidUserDataException("Invalid status value: " + orderDTO.getStatus());
-            }
-            existingOrder.setStatus(status);
+        // Ensure the status is provided for update
+        if (orderDTO.getStatus() != null) {
+            existingOrder.setStatus(orderDTO.getStatus());  // Set the enum directly
         }
 
         Order updatedOrder = orderRepository.save(existingOrder);
-        return new OrderDTO(updatedOrder.getId(), updatedOrder.getUser().getId(), updatedOrder.getTableId(), updatedOrder.getStatus().name(), updatedOrder.getCreatedAt(), null);
+
+        // Return the updated order DTO
+        return new OrderDTO(
+                updatedOrder.getId(),
+                updatedOrder.getUser().getId(),
+                updatedOrder.getTableId(),
+                updatedOrder.getStatus(),  // Passing the enum directly
+                updatedOrder.getCreatedAt(),
+                null
+        );
     }
 
     // Get Orders by Table ID
@@ -112,8 +137,8 @@ public class OrderService {
                         order.getId(),
                         order.getUser().getId(),
                         order.getTableId(),
-                        order.getStatus().name(),
-                        order.getCreatedAt(),  // Pass the createdAt field
+                        order.getStatus(),  // Passing the enum directly
+                        order.getCreatedAt(),
                         null))
                 .collect(Collectors.toList());
     }
@@ -131,3 +156,4 @@ public class OrderService {
         }
     }
 }
+

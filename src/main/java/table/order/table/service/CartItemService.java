@@ -37,6 +37,11 @@ public class CartItemService {
         Cart cart = cartRepository.findById(cartId)
                 .orElseThrow(() -> new InvalidUserDataException("Cart not found with ID: " + cartId));
 
+        // Check if MenuDTO is null
+        if (cartItemDTO.getMenu() == null || cartItemDTO.getMenu().getId() == null) {
+            throw new InvalidUserDataException("Menu information is required and cannot be null");
+        }
+
         // Convert MenuDTO to Menu entity directly
         Menu menu = menuRepository.findById(cartItemDTO.getMenu().getId())
                 .orElseThrow(() -> new InvalidUserDataException("Menu not found with ID: " + cartItemDTO.getMenu().getId()));

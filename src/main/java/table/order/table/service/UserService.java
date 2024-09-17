@@ -47,6 +47,7 @@ public class UserService {
         user.setRole(role);  // Set the role enum
 
         User savedUser = userRepository.save(user);
+        System.out.println("User saved with ID: " + savedUser.getId());
 
         // Pass the Role enum directly to the DTO
         return new UserDTO(savedUser.getId(), savedUser.getPhoneNumber(), savedUser.getPassword(), savedUser.getRole());
