@@ -13,4 +13,14 @@ public class CartItemDTO {
     private Long id;
     private MenuDTO menu;
     private Integer quantity;
+
+    @Override
+    public String toString() {
+        return "CartItemDTO{" +
+                "id=" + id +
+                ", menu=" + menu +
+                ", quantity=" + quantity +
+                '}';
+    }
 }
+

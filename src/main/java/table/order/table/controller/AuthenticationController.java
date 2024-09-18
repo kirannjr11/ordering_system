@@ -44,9 +44,9 @@ public class AuthenticationController {
         if (authentication != null && authentication.isAuthenticated()) {
             if (authentication.getAuthorities().stream()
                     .anyMatch(auth -> auth.getAuthority().equals("ROLE_ADMIN"))) {
-                return new ResponseEntity<>("Login successful as ADMIN. You can now access /orders.", HttpStatus.OK);
+                return new ResponseEntity<>("Login successful as ADMIN.", HttpStatus.OK);
             } else {
-                return new ResponseEntity<>("Login successful as USER. You can now access /menus.", HttpStatus.OK);
+                return new ResponseEntity<>("Login successful as USER.", HttpStatus.OK);
             }
         } else {
             return new ResponseEntity<>("Login failed. Invalid credentials.", HttpStatus.UNAUTHORIZED);

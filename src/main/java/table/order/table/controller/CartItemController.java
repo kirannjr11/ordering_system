@@ -18,8 +18,11 @@ public class CartItemController {
     // Create a new CartItem
     @PostMapping("/carts/{cartId}")
     public CartItemDTO createCartItem(@RequestBody CartItemDTO cartItemDTO, @PathVariable Long cartId) {
+        System.out.println("CartItemDTO: " + cartItemDTO); // Log the incoming data
         return cartItemService.createCartItem(cartItemDTO, cartId);
     }
+
+
 
     // Get a CartItem by its ID
     @GetMapping("/{cartItemId}")

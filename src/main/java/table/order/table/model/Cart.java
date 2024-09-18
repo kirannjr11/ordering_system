@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -24,7 +25,8 @@ public class Cart {
     private User user;
 
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "cart")
-    private List<CartItem> cartItems;
-
+    @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<CartItem> cartItems = new ArrayList<>();
 }
+
+
